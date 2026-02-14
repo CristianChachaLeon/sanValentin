@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    overflow: hidden;
+  }
+  .card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+    z-index: 2;
+  }
+  h1 { margin-bottom: 30px; color: #e63946; }
+  .buttons { display: flex; gap: 20px; justify-content: center; }
+  button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  button:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+  .yes { background-color: #2a9d8f; color: white; }
+  .no { background-color: #e76f51; color: white; position: relative; }
+
+  .heart {
+    position: absolute;
+    font-size: 28px;
+    animation: explode 900ms ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes explode {
+    from { transform: translate(0,0) scale(1); opacity: 1; }
+    to { transform: translate(var(--x), var(--y)) scale(0.4); opacity: 0; }
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.15);
+    z-index: 3;
+  }
+
+  .message {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Cariiii, will you be my Valentine?</h1>
+    <div class="buttons">
+      <button class="yes" onclick="sayYes()">Yes</button>
+      <button class="no" onmouseover="moveNo(this)">No</button>
+    </div>
+  </div>
+
+<script>
+  const gifs = [
+    "gifs/hug-kiss.gif",
+    "gifs/hug-hugs.gif",
+    "gifs/milk-and-mocha-milk-and-mocha-bear.gif",
+    "gifs/milk-and-mocha-good-night.gif",
+    "gifs/quby-hearts.gif",
+    "gifs/quby-hearts-2.gif"
+  ];
+
+  let gifIndex = 0;
+  let gifInterval;
+
+  function sayYes() {
+    explodeHearts(120);
+    setTimeout(() => explodeHearts(80), 180);
+    setTimeout(() => explodeHearts(60), 360);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="message">
+        <h1 style="color:#e63946;">Te amooo muchoooo!!! ❤️</h1>
+        <img id="valentineGif" src="${gifs[0]}" style="width:220px; border-radius:14px; margin:10px 0;">
+        <p style="font-size:18px;">Mi niña hermosa de mi corazón❤️</p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    startGifRotation();
+  }
+
+  function explodeHearts(amount) {
+    for (let i = 0; i < amount; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = '❤️';
+
+      const x = (Math.random() - 0.5) * 1000 + 'px';
+      const y = (Math.random() - 0.5) * 1000 + 'px';
+      const size = Math.random() * 20 + 20;
+      heart.style.fontSize = size + 'px';
+
+      heart.style.setProperty('--x', x);
+      heart.style.setProperty('--y', y);
+      heart.style.left = '50%';
+      heart.style.top = '50%';
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 900);
+    }
+  }
+
+  function startGifRotation() {
+    const gifElement = document.getElementById("valentineGif");
+    gifInterval = setInterval(() => {
+      gifIndex = (gifIndex + 1) % gifs.length;
+      // Cambia directamente el GIF sin transición
+      gifElement.src = gifs[gifIndex];
+    }, 5000);
+  }
+
+  function moveNo(btn) {
+    const x = Math.random() * 600 - 300;
+    const y = Math.random() * 600 - 300;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+  }
+</script>
+</body>
+</html>
